@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebGridExample", "WebGridExample\WebGridExample.csproj", "{65AE6C8D-B95F-4217-91A4-6D04B8CBC340}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65AE6C8D-B95F-4217-91A4-6D04B8CBC340}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65AE6C8D-B95F-4217-91A4-6D04B8CBC340}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65AE6C8D-B95F-4217-91A4-6D04B8CBC340}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65AE6C8D-B95F-4217-91A4-6D04B8CBC340}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

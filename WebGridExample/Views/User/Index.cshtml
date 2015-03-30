@@ -1,39 +1,34 @@
-﻿@model WebGridExample.ViewModel.UserViewModel
+﻿@using System.Web.Mvc.Html
+@model WebGridExample.ViewModel.UserViewModel
 <!DOCTYPE html>
 <html>
 <head>
     <title>WebGrid Example</title>
+    <script src="~/Scripts/jquery-2.1.3.min.js"></script>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        .text-center { text-align: center }
+        .checkbox-width { width: 50px }
+    </style>
 </head>
 <body>
-    @{
-        var grid = new WebGrid(Model.Users, canPage: false);
-    }
 
     <h2>WebGrid Example</h2>
 
-    @if (Model.Users != null)
+    @if (Model != null)
     {
-        @MvcHtmlString.Create(
-            grid.GetHtml(
-                htmlAttributes: new
-                {
-                    id = "grid",
-                    @class = "table table-bordered table-striped table-condensed"
-                },
-                emptyRowCellValue: "No Records Found",
-                headerStyle: "grid-header",
-                rowStyle: "data-row",
-                alternatingRowStyle: "alt-row",
-                columns: grid.Columns(
-                    grid.Column("UserName", "User Name", @<text>@item.Value.UserName</text>),
-                    grid.Column("FirstName", "First Name", @<text>@item.Value.FirstName</text>),
-                    grid.Column("LastName", "Last Name", @<text>@item.Value.LastName</text>),
-                    grid.Column("LastLogin", "Last Login", @<text>@item.Value.LastLogin.ToString()</text>)
-                    )
-                ).ToString()
-            )
+        <div id="userGrid">
+            @Html.Partial("userGrid", Model.Users)
+        </div>
     }
 
 
+    <script type="text/javascript">
+        $(function() {
+            $("#allBox").on("click", function () {
+                $("[name=select]").prop("checked", $("#allBox").is(":checked"));
+            });
+        });
+    </script>
 </body>
 </html>

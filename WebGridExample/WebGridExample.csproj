@@ -152,9 +152,11 @@
     <Compile Include="Repository\UserRepository.cs" />
     <Compile Include="Repository\Repository.cs" />
     <Compile Include="ViewModel\UserViewModel.cs" />
+    <Compile Include="ModelBinders\UserViewModelBinder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\UserGrid.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />

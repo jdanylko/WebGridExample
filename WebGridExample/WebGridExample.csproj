@@ -135,13 +135,19 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionResults\CsvResult.cs" />
+    <Compile Include="ActionResults\ExcelResult.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Formatters\CsvHelpers.cs" />
+    <Compile Include="Formatters\ExcelFormatter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="ModelBinders\ExportViewModelBinder.cs" />
+    <Compile Include="ViewModel\ExportParameters.cs" />
     <Compile Include="Models\UserConfiguration.cs" />
     <Compile Include="Models\IUserContext.cs" />
     <Compile Include="Models\User.cs" />
@@ -153,6 +159,11 @@
     <Compile Include="Repository\Repository.cs" />
     <Compile Include="ViewModel\UserViewModel.cs" />
     <Compile Include="ModelBinders\UserViewModelBinder.cs" />
+    <Compile Include="WebGridResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WebGridResources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\Error.cshtml" />
@@ -169,7 +180,12 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="WebGridResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WebGridResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>

@@ -2,6 +2,7 @@ using System;
 
 namespace WebGridExample.Models
 {
+    [Serializable]
     public class User
     {
         public int Id { get; set; } // Id (Primary key)

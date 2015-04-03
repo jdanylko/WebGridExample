@@ -1,4 +1,8 @@
-﻿using System.Web.Mvc;
+﻿using System.IO;
+using System.Linq;
+using System.Web.Mvc;
+using WebGridExample.ActionResults;
+using WebGridExample.Formatters;
 using WebGridExample.Interface;
 using WebGridExample.Repository;
 using WebGridExample.ViewModel;
@@ -38,6 +42,30 @@ namespace WebGridExample.Controllers
                 }
             }
 
+            return Redirect(Url.Content("~/"));
+        }
+
+        [HttpPost]
+        public ActionResult Export(ExportParameters model)
+        {
+            var records = _repository.GetAll();
+            if (model.PagingEnabled)
+            {
+                records = records.Skip((model.CurrentPage-1) * model.PageSize)
+                   .Take(model.PageSize);
+            }
+
+            if (model.OutputType.Equals(Output.Excel))
+            {
+                var excelFormatter = new ExcelFormatter(records);
+                return new ExcelResult(excelFormatter.CreateXmlWorksheet(), "Sample.xlsx");
+            }
+            
+            if (model.OutputType.Equals(Output.Csv))
+            {
+                return new CsvResult(records, "Sample.csv");
+            }
+           
             return Redirect(Url.Content("~/"));
         }
 

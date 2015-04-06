@@ -30,9 +30,46 @@
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script type="text/javascript">
         $(function () {
+            function formatDate(date) {
+                var hours = date.getHours();
+                var minutes = date.getMinutes();
+                var seconds = date.getSeconds();
+                var ampm = hours >= 12 ? 'pm' : 'am';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // the hour '0' should be '12'
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+                var strTime = hours + ':' + minutes + ':'+seconds+' ' + ampm.toUpperCase();
+                return date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
+            }
+
             $("#allBox").on("click", function () {
                 $("[name=select]").prop("checked", $("#allBox").is(":checked"));
             });
+
+            $("#moreButton").click(function() {
+                var pageSize = 5;
+                var getNextPageNo = ($("#grid tbody tr").size() / pageSize) + 1;
+                var row = "<tr><td class=\"text-center checkbox-width\"></td><td></td><td></td><td></td><td></td></tr>";
+                $.getJSON('/api/User/GetPaging?page=' + getNextPageNo + "&pageSize=" + pageSize, function (users) {
+                    if (users.length > 0) {
+                        $.each(users, function(index, user) {
+                            $('#grid tbody').append($(row));
+                            var bottomRow = $("#grid tbody tr:last");
+                            $("td:nth-child(1)", bottomRow).html("<input id=\"select\" class=\"box\" name=\"select\" " +
+                                "type=\"checkbox\" value=\"" + user.Id + "\">");
+                            $("td:nth-child(2)", bottomRow).html(user.UserName);
+                            $("td:nth-child(3)", bottomRow).html(user.FirstName);
+                            $("td:nth-child(4)", bottomRow).html(user.LastName);
+                            var formattedDate = formatDate(new Date(user.LastLogin));
+                            $("td:nth-child(5)", bottomRow).html(formattedDate);
+                        });
+                    } else {
+                        $(".more-button").html("<div class=\"alert alert-info\">No more records.</div>");
+                    }
+                });
+            });
+
         });
     </script>
 </body>

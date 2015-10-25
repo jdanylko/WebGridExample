@@ -1,9 +1,12 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using WebGridExample.ActionResults;
+using WebGridExample.CommandResults;
 using WebGridExample.Formatters;
 using WebGridExample.Interface;
+using WebGridExample.Models;
 using WebGridExample.Repository;
 using WebGridExample.ViewModel;
 
@@ -31,19 +34,47 @@ namespace WebGridExample.Controllers
         }
 
         [HttpPost]
-        public ActionResult Index(UserViewModel model)
+        public ActionResult Index(FormCollection forms)
         {
-            if (model.Delete)
-            {
-                foreach (var user in model.SelectedUsers)
-                {
-                    var loadedUser = _repository.GetById(user.Id);
-                    _repository.Delete(loadedUser);
-                    _repository.SaveChanges();
-                }
-            }
+            // Old way.
+            // "select" variable will contain "select=2,3,4,5,10"
+            //string[] checks = forms["select"].Split(',');
 
-            return Redirect(Url.Content("~/"));
+            //foreach (string checkedId in checks)
+            //{
+            //    if (checkedId.Contains("false")) continue;
+
+            //    var id = checkedId;
+            //    User user = _repository.First(e => e.Id.ToString() == id);
+            //    if (!String.IsNullOrEmpty(forms["btnDelete"]))
+            //    {
+            //        _repository.Delete(user);
+            //    }
+            //    if (!String.IsNullOrEmpty(forms["btnSendEmail"]))
+            //    {
+            //        EMailTemplateService.SendTemplatedEMail(user);
+            //    }
+            //    if (!String.IsNullOrEmpty(forms["btnApprove"]))
+            //    {
+            //        // 
+            //    }
+            //    if (!String.IsNullOrEmpty(forms["Stuff1"]))
+            //    {
+            //        // blah
+            //    }
+
+            //    if (!String.IsNullOrEmpty(forms["Stuff2"]))
+            //    {
+            //        // blah
+            //    }
+            //}
+            //return Redirect(Url.Content("~/"));
+
+            // New way.
+            return new UserCommandResult(
+                this.ControllerContext,
+                result => Redirect(Url.Content("~/"))
+            );
         }
 
         [HttpPost]

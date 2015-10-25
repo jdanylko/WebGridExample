@@ -5,7 +5,6 @@ using WebGridExample.Models;
 
 namespace WebGridExample.ViewModel
 {
-    [ModelBinder(typeof(UserViewModelBinder))]
     public class UserViewModel
     {
         public IEnumerable<User> Users { get; set; }
@@ -13,5 +12,6 @@ namespace WebGridExample.ViewModel
 
         public IEnumerable<User> SelectedUsers { get; set; }
         public bool Delete { get; set; }
+        public bool SendEmail { get; set; }
     }
 }

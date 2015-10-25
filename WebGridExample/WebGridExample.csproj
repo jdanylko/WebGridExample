@@ -177,8 +177,17 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionResults\BatchCommandResult.cs" />
+    <Compile Include="ActionResults\CommandResult.cs" />
     <Compile Include="ActionResults\CsvResult.cs" />
     <Compile Include="ActionResults\ExcelResult.cs" />
+    <Compile Include="CommandResults\UserCommandResult.cs" />
+    <Compile Include="FormCommands\CommandList.cs" />
+    <Compile Include="FormCommands\DeleteUserCommand.cs" />
+    <Compile Include="FormCommands\FormCommand.cs" />
+    <Compile Include="FormCommands\SendEmailCommand.cs" />
+    <Compile Include="FormCommands\SetPageRowsCommand.cs" />
+    <Compile Include="Interface\IFormCommand.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />

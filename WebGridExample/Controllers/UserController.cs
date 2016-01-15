@@ -23,12 +23,11 @@ namespace WebGridExample.Controllers
         }
 
         // GET: User
-        public ActionResult Index(int? page)
+        public ActionResult Index()
         {
-            var defaultPageSize = 5;
             var model = new UserViewModel
             {
-                Users = _repository.GetPagedUsers(page, defaultPageSize)
+                Users = _repository.GetAll()
             };
             return View(model);
         }

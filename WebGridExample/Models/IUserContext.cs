@@ -1,8 +1,7 @@
 using System;
 using System.Data.Entity;
-using WebGridExample.Models;
 
-namespace WebGridExample.Interface
+namespace WebGridExample.Models
 {
     public interface IUserContext : IDisposable
     {

@@ -1,5 +1,4 @@
 using System.Data.Entity;
-using WebGridExample.Interface;
 
 namespace WebGridExample.Models
 {

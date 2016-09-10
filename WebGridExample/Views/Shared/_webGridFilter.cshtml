@@ -1,0 +1,23 @@
+﻿
+@model WebGridExample.Models.WebGridFilterModel
+<div class="dropdown">
+    <span class="button-group">
+        @Model.HeadingText <span class="dropdown-toggle glyphicon glyphicon-filter" data-toggle="dropdown"></span>
+        <ul class="dropdown-menu">
+            <li>
+                <a href="#" class="small" data-value="all" tabIndex="-1">
+                    <input type="checkbox" checked />&nbsp;Select All
+                </a>
+            </li>
+            <li class="divider"></li>
+            @foreach (var user in Model.Users.OrderBy(Model.Property))
+            {
+                <li>
+                    <a href="#" class="small" data-value="@user.Id" tabIndex="-1">
+                        <input type="checkbox" class="filterbox" checked />&nbsp;@Model.Property.Invoke(user)
+                    </a>
+                </li>
+            }
+        </ul>
+    </span>
+</div>

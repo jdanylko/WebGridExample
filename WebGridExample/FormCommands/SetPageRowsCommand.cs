@@ -6,7 +6,7 @@ namespace WebGridExample.FormCommands
     {
         public SetPageRowsCommand(ControllerContext context)
         {
-            CommandName = "rows";
+            CommandName = "size";
             Context = context;
         }
         public override bool Execute(string input)

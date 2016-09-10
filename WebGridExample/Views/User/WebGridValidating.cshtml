@@ -1,0 +1,234 @@
+﻿@using System.Web.Mvc.Html
+@using WebGridExample.Helpers.Html
+@using WebGridExample.Models
+@model WebGridExample.ViewModel.WebGridWebApiViewModel
+@{
+    var grid = new WebGrid(Model.Users, canPage: false);
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebGrid Example</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .text-center { text-align: center }
+        .checkbox-width { width: 50px }
+        
+        .record-toolbar { padding: 0 10px; margin-bottom: 0}
+        #grid td:nth-child(6) { width: 100px }
+    </style>
+    <script src="~/Scripts/jquery-2.1.4.min.js" async></script>
+</head>
+<body>
+
+    <h2>WebGrid Example</h2>
+
+    @if (Model != null)
+    {
+        <div id="userGrid">
+
+            @using (Html.BeginForm("WebGridBatch", "User", FormMethod.Post, new { @role = "search" }))
+            {
+                <div class="navbar navbar-default" role="search">
+                    <ul class="nav navbar-nav navbar-form">
+                        <li>
+                            <button id="btnRefresh" href="#" title="Refresh" class="btn btn-default btn-sm">
+                                <i class="glyphicon glyphicon-refresh"></i>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="submit" id="btnDelete" name="btnDelete" href="#" value="1" title="Delete" class="btn btn-default btn-sm">
+                                <i class="glyphicon glyphicon-remove"></i>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" id="btnExport" name="btnExport" href="#" title="Export..." class="btn btn-default btn-sm"
+                                    data-toggle="modal" data-target=".export-dialog">
+                                <i class="glyphicon glyphicon-export"></i>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                @MvcHtmlString.Create(
+                    grid.GetHtml(
+                        htmlAttributes: new
+                        {
+                            id = "grid",
+                            @class = "table table-bordered table-striped table-condensed"
+                        },
+                        emptyRowCellValue: "No Records Found",
+                        headerStyle: "grid-header",
+                        columns: grid.Columns(
+                            grid.Column(header: "{CheckBoxHeading}",
+                                format: @<text><input id="select" class="box" name="select" type="checkbox" value="@item.Value.Id" /></text>,
+                                style: "text-center checkbox-width"),
+                            grid.Column("UserName",
+                                format: item => Html.EditableTextBox((item.Value as User).UserName, (item.Value as User), "UserName")),
+                            grid.Column("FirstName",
+                                format: item => Html.EditableTextBox((item.Value as User).FirstName, item.Value as User, "FirstName")),
+                            grid.Column("LastName",
+                                format: item => Html.EditableTextBox((item.Value as User).LastName, item.Value as User, "LastName")),
+                            grid.Column("LastLogin",
+                                format: item => Html.EditableDateTime((item.Value as User).LastLogin, item.Value as User, "LastLogin")),
+                            grid.Column("Options",
+                                format: item => Html.DisplayRecordOptions(item.Value as User), canSort: false)
+
+                            )
+                        )
+                        .ToString()
+                        .Replace("{CheckBoxHeading}", "<div class='text-center'><input type='checkbox' id='allBox'/></div>")
+                    )
+            }
+        </div>
+
+    }
+
+    <div class="more-button text-center"><button type="button" id="moreButton" class="btn btn-default">Load More</button></div>
+
+
+    <script src="~/Scripts/bootstrap.min.js" async></script>
+
+    @using (Html.BeginForm("Export", "User", FormMethod.Post))
+    {
+        <div class="modal fade export-dialog">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Export</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                @Html.Hidden("CurrentPage", grid.PageIndex)
+                                @Html.Hidden("RowsPerPage", grid.RowsPerPage)
+                                @Html.Hidden("PagingEnabled", grid.PageCount > 1)
+                                <div class="col-md-3">Range:</div>
+                                <div class="col-md-9">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="pageOptions" id="pageCurrent" value="pageCurrent" checked>
+                                            Current Page
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="pageOptions" id="pageAll" value="pageAll">
+                                            All
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">Output:</div>
+                                <div class="col-md-9">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="exportType" id="exportExcel" value="exportExcel" checked>
+                                            Excel
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="exportType" id="exportCsv" value="exportCsv">
+                                            Csv
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Export</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+
+    <script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
+    <script src="/signalr/hubs"></script>
+    
+<script>
+    $(function() {
+
+        var webGridHubClient = $.connection.webGridHub;
+
+        webGridHubClient.client.recordSaved = function() {
+            alert("Record Saved.");
+        };
+
+        $(".edit-button").on("click", function () {
+            var row = $(this).closest("tr");
+            $(".record-toolbar li", row).toggleClass("hide");
+            // Copy value into the edit box.
+            $("input, select, textarea", row).toggleClass("hide");
+            $("td", row).each(function () {
+                var cell = $(this, row);
+                var cellValue = $(".cell-value", cell);
+                if (cellValue.length > 0) {
+                    $("input", cell)
+                        .val(cellValue.text())
+                        .css("border", "")
+                        .removeAttr("title");
+                }
+            });
+            $(".cell-value", row).toggleClass("hide");
+        });
+
+        $(".cancel-button")
+            .on("click",
+                function() {
+                    var row = $(this).closest("tr");
+                    $(".record-toolbar li", row).toggleClass("hide");
+                    $(".cell-value", row).toggleClass("hide");
+                    $("input, select, textarea", row).toggleClass("hide");
+                });
+
+        $(".save-button").on("click", function () {
+            var row = $(this).closest("tr");
+            var record = getRecord(row);
+            webGridHubClient.server.getValidation(record).done(function (result) {
+                if (result.Success) {
+                    $("[id^=" + result.MemberName + "]", row)
+                        .css("border", "")
+                        .removeAttr("title");
+                    webGridHubClient.server.saveRecord(record);
+                    $("td", row).each(function () {
+                        var cell = $(this, row);
+                        var inputValue = $("input", cell);
+                        $(".cell-value", cell).text(inputValue.val());
+                    });
+                    $(".record-toolbar li", row).toggleClass("hide");
+                    $("input, select, textarea", row).toggleClass("hide");
+                    $(".cell-value", row).toggleClass("hide");
+                } else {
+                    $("[id^=" + result.MemberName + "]", row)
+                        .css("border", "1px solid red")
+                        .attr("title", result.Message);
+                }
+            });
+        });
+
+        function getRecord(row) {
+            return {
+                id: row.find(':nth-child(1)').find("input:checkbox").val(),
+                checkBoxCell: row.find(':nth-child(1)').html(),
+                userName: row.find(':nth-child(2)').find("input").val(),
+                firstName: row.find(':nth-child(3)').find("input").val(),
+                lastName: row.find(':nth-child(4)').find("input").val(),
+                lastLogin: row.find(':nth-child(5)').find("input").val()
+            };
+        };
+
+        $.connection.hub.start();
+
+    });
+</script>
+
+</body>
+</html>

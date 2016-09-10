@@ -77,6 +77,10 @@
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MvcPaging, Version=2.1.4.31, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvcPaging.2.1.4\lib\net40\MvcPaging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -166,13 +170,13 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
+    <Content Include="Scripts\WebGridFilter.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
     <Content Include="Scripts\jquery.signalR-2.2.0.js" />
     <Content Include="Scripts\jquery.signalR-2.2.0.min.js" />
-    <Content Include="Scripts\WebGridFilter.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -188,7 +192,10 @@
     <Compile Include="FormCommands\FormCommand.cs" />
     <Compile Include="FormCommands\SendEmailCommand.cs" />
     <Compile Include="FormCommands\SetPageRowsCommand.cs" />
+    <Compile Include="Helpers\Html\EditableHelpers.cs" />
+    <Compile Include="Helpers\Html\PagingExtensions.cs" />
     <Compile Include="Helpers\Html\WebGridHelpers.cs" />
+    <Compile Include="Helpers\Url\UrlHelperExtensions.cs" />
     <Compile Include="Interface\IFormCommand.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -196,7 +203,25 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Hubs\WebGridHub.cs" />
     <Compile Include="Interface\IUserContext.cs" />
+    <Compile Include="ModelBinders\PagingBinder.cs" />
+    <Compile Include="Models\ValidationMessage.cs" />
     <Compile Include="Models\WebGridFilterModel.cs" />
+    <EmbeddedResource Include="Resources\CommonResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CommonResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Models\WebGridModel.cs" />
+    <Compile Include="Resources\CommonResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CommonResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\HelpersResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HelpersResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Formatters\CsvHelpers.cs" />
@@ -206,6 +231,8 @@
     </Compile>
     <Compile Include="ModelBinders\ExportViewModelBinder.cs" />
     <Compile Include="Api\UserController.cs" />
+    <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="ViewModel\PagingModel.cs" />
     <Compile Include="ViewModel\ExportParameters.cs" />
     <Compile Include="Models\UserConfiguration.cs" />
     <Compile Include="Models\User.cs" />
@@ -215,8 +242,11 @@
     <Compile Include="Interface\IUserRepository.cs" />
     <Compile Include="Repository\UserRepository.cs" />
     <Compile Include="Repository\Repository.cs" />
-    <Compile Include="ViewModel\UserViewModel.cs" />
+    <Compile Include="ViewModel\WebGridBatchViewModel.cs" />
     <Compile Include="ModelBinders\UserViewModelBinder.cs" />
+    <Compile Include="ViewModel\WebGridExcelViewModel.cs" />
+    <Compile Include="ViewModel\WebGridFilterModel.cs" />
+    <Compile Include="ViewModel\WebGridWebApiViewModel.cs" />
     <Compile Include="WebGridResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -225,14 +255,21 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\UserGrid.cshtml" />
     <Content Include="packages.config" />
     <Content Include="Scripts\jquery-2.1.4.min.map" />
+    <Content Include="Views\Shared\DisplayTemplates\BootstrapPagination.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\WebGridBatch.cshtml" />
     <Content Include="Views\Shared\_webGridFilter.cshtml" />
+    <Content Include="Views\User\WebGridExcel.cshtml" />
+    <Content Include="Views\User\WebGridCSV.cshtml" />
+    <Content Include="Views\User\WebGridLLWebApi.cshtml" />
+    <Content Include="Views\User\WebGridLLSignalR.cshtml" />
+    <Content Include="Views\User\WebGridInlineEditing.cshtml" />
+    <Content Include="Views\User\WebGridValidating.cshtml" />
+    <Content Include="Views\User\WebGridExcelFiltering.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -241,6 +278,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\HelpersResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>HelpersResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="WebGridResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>WebGridResources.Designer.cs</LastGenOutput>

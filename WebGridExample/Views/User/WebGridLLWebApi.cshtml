@@ -1,0 +1,185 @@
+﻿@using System.Web.Mvc.Html
+@model WebGridExample.ViewModel.WebGridWebApiViewModel
+@{
+    var grid = new WebGrid(Model.Users, canPage: false);
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebGrid Example</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .text-center {text-align: center }
+        .checkbox-width { width: 50px }
+    </style>
+    <script src="~/Scripts/jquery-2.1.4.min.js" async></script>
+</head>
+<body>
+
+    <h2>WebGrid Example</h2>
+
+    @if (Model != null)
+    {
+        <div id="userGrid">
+
+            @using (Html.BeginForm("WebGridBatch", "User", FormMethod.Post, new { @role = "search" }))
+            {
+                <div class="navbar navbar-default" role="search">
+                    <ul class="nav navbar-nav navbar-form">
+                        <li>
+                            <button id="btnRefresh" href="#" title="Refresh" class="btn btn-default btn-sm">
+                                <i class="glyphicon glyphicon-refresh"></i>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="submit" id="btnDelete" name="btnDelete" href="#" value="1" title="Delete" class="btn btn-default btn-sm">
+                                <i class="glyphicon glyphicon-remove"></i>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" id="btnExport" name="btnExport" href="#" title="Export..." class="btn btn-default btn-sm"
+                                    data-toggle="modal" data-target=".export-dialog">
+                                <i class="glyphicon glyphicon-export"></i>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                @MvcHtmlString.Create(
+                    grid.GetHtml(
+                        htmlAttributes: new
+                        {
+                            id = "grid",
+                            @class = "table table-bordered table-striped table-condensed"
+                        },
+                        emptyRowCellValue: "No Records Found",
+                        headerStyle: "grid-header",
+                        columns: grid.Columns(
+                            grid.Column(header: "{CheckBoxHeading}",
+                                format: @<text><input id="select" class="box" name="select" type="checkbox" value="@item.Value.Id" /></text>,
+                                style: "text-center checkbox-width"),
+                            grid.Column("UserName", "User Name", @<text>@item.Value.UserName</text>),
+                            grid.Column("FirstName", "First Name", @<text>@item.Value.FirstName</text>),
+                            grid.Column("LastName", "Last Name", @<text>@item.Value.LastName</text>),
+                            grid.Column("LastLogin", "Last Login", @<text>@item.Value.LastLogin.ToString()</text>)
+                            )
+                        )
+                        .ToString()
+                        .Replace("{CheckBoxHeading}", "<div class='text-center'><input type='checkbox' id='allBox'/></div>")
+                    )
+            }
+        </div>
+
+    }
+    
+    <div class="more-button text-center"><button type="button" id="moreButton" class="btn btn-default">Load More</button></div>
+
+    
+    <script src="~/Scripts/bootstrap.min.js" async></script>
+    
+    @using (Html.BeginForm("Export", "User", FormMethod.Post))
+    {
+        <div class="modal fade export-dialog">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Export</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                @Html.Hidden("CurrentPage", grid.PageIndex)
+                                @Html.Hidden("RowsPerPage", grid.RowsPerPage)
+                                @Html.Hidden("PagingEnabled", grid.PageCount > 1)
+                                <div class="col-md-3">Range:</div>
+                                <div class="col-md-9">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="pageOptions" id="pageCurrent" value="pageCurrent" checked>
+                                            Current Page
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="pageOptions" id="pageAll" value="pageAll">
+                                            All
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">Output:</div>
+                                <div class="col-md-9">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="exportType" id="exportExcel" value="exportExcel" checked>
+                                            Excel
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="exportType" id="exportCsv" value="exportCsv">
+                                            Csv
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Export</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    
+<script type="text/javascript">
+    $(function () {
+
+        function formatDate(date) {
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var seconds = date.getSeconds();
+            var ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            var strTime = hours + ':' + minutes + ':'+seconds+' ' + ampm.toUpperCase();
+            return date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
+        }
+
+        $("#allBox").on("click", function () {
+            $("[name=select]").prop("checked", $("#allBox").is(":checked"));
+        });
+
+        $("#moreButton").click(function () {
+            var pageSize = 5;
+            var getNextPageNo = Math.ceil($("#grid tbody tr").size() / pageSize + 1);
+            var row = "<tr><td class=\"text-center checkbox-width\"></td><td></td><td></td><td></td><td></td></tr>";
+            $.getJSON('/api/User/GetPaging?page=' + getNextPageNo + "&pageSize=" + pageSize, function (users) {
+                if (users.length > 0) {
+                    $.each(users, function(index, user) {
+                        $('#grid tbody').append($(row));
+                        var bottomRow = $("#grid tbody tr:last");
+                        $("td:nth-child(1)", bottomRow).html("<input id=\"select\" class=\"box\" name=\"select\" " +
+                            "type=\"checkbox\" value=\"" + user.Id + "\">");
+                        $("td:nth-child(2)", bottomRow).html(user.UserName);
+                        $("td:nth-child(3)", bottomRow).html(user.FirstName);
+                        $("td:nth-child(4)", bottomRow).html(user.LastName);
+                        var formattedDate = formatDate(new Date(user.LastLogin));
+                        $("td:nth-child(5)", bottomRow).html(formattedDate);
+                    });
+                } else {
+                    $(".more-button").html("<div class=\"alert alert-info\">No more records.</div>");
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

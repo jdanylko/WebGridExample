@@ -1,0 +1,146 @@
+﻿@using System.Web.Mvc.Html
+@model WebGridExample.ViewModel.WebGridBatchViewModel
+@{
+    var grid = new WebGrid(Model.Users, canPage: false);
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebGrid Example</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .text-center {
+            text-align: center;
+        }
+
+        .checkbox-width {
+            width: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>WebGrid Example</h2>
+
+    @if (Model != null)
+    {
+        <div id="userGrid">
+
+            @using (Html.BeginForm("WebGridBatch", "User", FormMethod.Post, new { @role = "search" }))
+            {
+                <div class="navbar navbar-default" role="search">
+                    <ul class="nav navbar-nav navbar-form">
+                        <li>
+                            <button id="btnRefresh" href="#" title="Refresh" class="btn btn-default btn-sm">
+                                <i class="glyphicon glyphicon-refresh"></i>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="submit" id="btnDelete" name="btnDelete" href="#" value="1" title="Delete" class="btn btn-default btn-sm">
+                                <i class="glyphicon glyphicon-remove"></i>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" id="btnExport" name="btnExport" href="#" title="Export..." class="btn btn-default btn-sm"
+                                    data-toggle="modal" data-target=".export-dialog">
+                                <i class="glyphicon glyphicon-export"></i>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                @MvcHtmlString.Create(
+                    grid.GetHtml(
+                        htmlAttributes: new
+                        {
+                            id = "grid",
+                            @class = "table table-bordered table-striped table-condensed"
+                        },
+                        emptyRowCellValue: "No Records Found",
+                        headerStyle: "grid-header",
+                        columns: grid.Columns(
+                            grid.Column(header: "{CheckBoxHeading}",
+                                format: @<text><input id="select" class="box" name="select" type="checkbox" value="@item.Value.Id" /></text>,
+                                style: "text-center checkbox-width"),
+                            grid.Column("UserName", "User Name", @<text>@item.Value.UserName</text>),
+                            grid.Column("FirstName", "First Name", @<text>@item.Value.FirstName</text>),
+                            grid.Column("LastName", "Last Name", @<text>@item.Value.LastName</text>),
+                            grid.Column("LastLogin", "Last Login", @<text>@item.Value.LastLogin.ToString()</text>)
+                            )
+                        )
+                        .ToString()
+                        .Replace("{CheckBoxHeading}", "<div class='text-center'><input type='checkbox' id='allBox'/></div>")
+                    )
+            }
+        </div>
+
+    }
+
+
+
+
+
+    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#allBox").on("click", function () {
+                $("[name=select]").prop("checked", $("#allBox").is(":checked"));
+            });
+        });
+    </script>
+    
+    @using (Html.BeginForm("Export", "User", FormMethod.Post))
+    {
+        <div class="modal fade export-dialog">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Export</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                @Html.Hidden("CurrentPage", grid.PageIndex)
+                                @Html.Hidden("RowsPerPage", grid.RowsPerPage)
+                                @Html.Hidden("PagingEnabled", grid.PageCount > 1)
+                                <div class="col-md-3">Range:</div>
+                                <div class="col-md-9">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="pageOptions" id="pageCurrent" value="pageCurrent" checked>
+                                            Current Page
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="pageOptions" id="pageAll" value="pageAll">
+                                            All
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">Output:</div>
+                                <div class="col-md-9">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="exportType" id="exportExcel" value="exportExcel" checked>
+                                            Excel
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Export</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</body>
+</html>

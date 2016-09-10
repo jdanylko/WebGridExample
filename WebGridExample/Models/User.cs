@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebGridExample.Models
 {
     [Serializable]
-    public class User
+    public class User: IValidatableObject
     {
         public int Id { get; set; } // Id (Primary key)
         public string UserName { get; set; } // UserName
@@ -14,6 +16,20 @@ namespace WebGridExample.Models
         public User()
         {
             LastLogin = System.DateTime.Now;
+        }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            var list = new List<ValidationResult>();
+
+            if (UserName.Length > 10)
+            {
+                var item = new ValidationResult("You cannot have a UserName with more than 10 characters",
+                    new[] { "UserName" });
+                list.Add(item);
+            }
+
+            return list;
         }
     }
 }

@@ -15,4 +15,3 @@ Here is the series so far:
 </ul>
 
 If you have any features you want included in this WebGrid, post a comment on the site and we'll see if we can add the feature into it.
-

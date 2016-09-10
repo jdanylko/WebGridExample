@@ -12,7 +12,7 @@ Here is the series so far:
   <li><a href="http://www.danylkoweb.com/Blog/aspnet-mvc-enhancing-the-webgrid-exporting-data-to-csv-A2">ASP.NET MVC: Enhancing the WebGrid - Exporting to CSV</a></li>
   <li><a href="http://www.danylkoweb.com/Blog/aspnet-mvc-enhancing-the-webgrid-lazy-loading-with-webapi-A4">ASP.NET MVC: Enhancing the WebGrid - Lazy Loading with Web API</a></li>
   <li><a href="http://www.danylkoweb.com/Blog/aspnet-mvc-enhancing-the-webgrid-lazy-loading-with-signalr-A0">ASP.NET MVC: Enhancing the WebGrid - Lazy Loading with SignalR</a></li>
-  <li><a href="http://www.danylkoweb.com/Blog/aspnet-mvc-enhancing-the-webgrid-inline-editing-using-signalr-B0">ASP.NET MVC: Enhancing the WebGrid - Inline Editing Using SignalR</a></li>  
+  <li><a href="http://www.danylkoweb.com/Blog/aspnet-mvc-enhancing-the-webgrid-inline-editing-using-signalr-B0">ASP.NET MVC: Enhancing the WebGrid - Inline Editing Using SignalR</a></li>
   <li><a href="http://www.danylkoweb.com/Blog/aspnet-mvc-enhancing-the-webgrid-validating-inline-editing-B3">ASP.NET MVC: Enhancing the WebGrid - Validating Inline Editing</a></li>
   <li><a href="http://www.danylkoweb.com/Blog/aspnet-mvc-enhancing-the-webgrid-excel-like-filtering-E0">ASP.NET MVC: Enhancing the WebGrid - Excel-Like Filtering</a></li>
 </ul>

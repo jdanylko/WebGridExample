@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using WebGridExample.Models;
@@ -11,9 +12,15 @@ namespace WebGridExample.ModelBinders
         public override object BindModel(ControllerContext controllerContext,
             ModelBindingContext bindingContext)
         {
+            var list = new List<string>();
             var request = controllerContext.HttpContext.Request;
-            var userIdList = request.Form.Get("select");
-            var list = userIdList.Split(',');
+
+            if (request.Form.AllKeys.Contains("select"))
+            {
+                var userIdList = request.Form.Get("select");
+                var idList = userIdList.Split(',');
+                list.AddRange(idList);
+            }
 
             return new WebGridBatchViewModel
             {

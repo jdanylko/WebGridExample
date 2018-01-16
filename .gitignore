@@ -188,3 +188,5 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 /NDependOut
+/.vs/WebGridExample/v15/Server/sqlite3/db.lock
+/.vs/WebGridExample/v15/Server/sqlite3
